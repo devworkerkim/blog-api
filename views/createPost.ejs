@@ -1,0 +1,15 @@
+<% include ./parts/header %>
+
+<form action="" method="post">
+    <label for="title">Title</label>
+    <input type="text" name="title" id="title" />
+    <label for="title">Body</label>
+    <textarea name="body" id="body"></textarea>
+    <select name="publish" id="publish">
+        <option value="true">Publish</option>
+        <option value="false">Draft</option>
+    </select>
+    <input type="submit" />
+</form>
+
+<% include ./parts/footer %>

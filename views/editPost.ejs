@@ -1,0 +1,38 @@
+<% include ./parts/header %>
+
+<% if (user) { %>
+    <form action="/blogposts/<%- blogpost._id %>?_method=PUT" method="post">
+        <label for="title">Title</label>
+        <input type="text" name="title" id="title" value="<%- blogpost.title %>" />
+        <p><%- blogpost.date_created %></p>
+        <label for="title">Body</label>
+        <textarea name="body" id="body"><%- blogpost.body %></textarea>
+        <select name="publish" id="publish">
+            <option value="true">Publish</option>
+            <option value="false" <% if (!blogpost.publish) { %>selected<% } %> >Draft</option>
+        </select>
+        <input type="submit" />
+    </form>
+    <form action="/blogposts/<%- blogpost._id %>?_method=DELETE" method="post"><input type="submit" value="Delete Post"></form>
+<% } else { %>
+    <h1><%- blogpost.title %></h1>
+    <p><%- blogpost.date_created %></p>
+    <p><%- blogpost.body %></p>
+<% } %>
+<h2>Comments</h2>
+<% for (var comment of blogpost.comments) { %>
+    <div>
+        <h3><%- comment.author %></h3>
+        <p><%- comment.date_created %></p>
+        <p><%- comment.body %></p>
+    </div>
+<% } %>
+<form action="/blogposts/<%- blogpost._id %>/comments" method="post">
+    <label for="username">Username</label>
+    <input type="email" id="email" name="email" />
+    <label for="commentBody">Comment</label>
+    <textarea id="commentBody" name="commentBody"></textarea>
+    <input type="submit" />
+</form>
+
+<% include ./parts/footer %>

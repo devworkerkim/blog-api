@@ -1,11 +1,17 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
-</html>
+<% include ./parts/header %>
+
+  <h1>Blog</h1>
+  <% for (var blogpost of blogposts) { %>
+    <% if (blogpost.publish || user) { %>
+      <div>
+        <h2><a href="/blogposts/<%- blogpost._id %>"><%- blogpost.title %></a> <% if (!blogpost.publish) { %>Draft<% } %></h2>
+        <p><%- blogpost.date_created %></p>
+        <p><%- blogpost.body %></p>
+        <% if (user) { %>
+          <form action="/blogposts/<%- blogpost._id %>?_method=DELETE" method="post"><input type="submit" value="Delete Post"></form>
+        <% } %>
+      </div>
+    <% } %>
+  <% } %>
+
+<% include ./parts/footer %>
