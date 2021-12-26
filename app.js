@@ -16,6 +16,7 @@ var User = require('./models/user');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var blogpostsRouter = require('./routes/blogposts');
+var publicpostsRouter = require('./routes/publicposts');
 
 var app = express();
 
@@ -78,6 +79,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/blogposts', blogpostsRouter);
+app.use('/publicposts', publicpostsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

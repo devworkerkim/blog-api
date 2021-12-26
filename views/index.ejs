@@ -1,17 +1,29 @@
 <% include ./parts/header %>
 
-  <h1>Blog</h1>
-  <% for (var blogpost of blogposts) { %>
-    <% if (blogpost.publish || user) { %>
-      <div>
-        <h2><a href="/blogposts/<%- blogpost._id %>"><%- blogpost.title %></a> <% if (!blogpost.publish) { %>Draft<% } %></h2>
-        <p><%- blogpost.date_created %></p>
-        <p><%- blogpost.body %></p>
-        <% if (user) { %>
-          <form action="/blogposts/<%- blogpost._id %>?_method=DELETE" method="post"><input type="submit" value="Delete Post"></form>
-        <% } %>
-      </div>
-    <% } %>
-  <% } %>
+  <script>
+    fetch('http://localhost:3000/blogposts')
+      .then((response) => response.json())
+      .then((blogposts) => {
+        for (let blogpost of blogposts) {
+          const blogdiv = document.createElement('div');
+          const blogTitle = document.createElement('h2');
+          const blogLink = document.createElement('a');
+          const blogDate = document.createElement('p');
+          const blogBody = document.createElement('p');
+
+          blogLink.href = `/publicposts/${blogpost._id}`;
+          blogLink.innerText = blogpost.title;
+          blogTitle.appendChild(blogLink);
+          blogdiv.appendChild(blogTitle);
+          blogDate.innerText = blogpost.date_created;
+          blogdiv.appendChild(blogDate);
+          blogBody.innerText = blogpost.body;
+          blogdiv.appendChild(blogBody);
+
+          document.querySelector('main').appendChild(blogdiv);
+        }
+      })
+      .catch((err) => console.error(err));
+  </script>
 
 <% include ./parts/footer %>

@@ -3,9 +3,9 @@ var router = express.Router();
 var Blogpost = require('../models/blogpost');
 var { body, validationResult } = require('express-validator');
 
-/* GET all blog posts. */
+/* GET all published blog posts. */
 router.get('/', function(req, res, next) {
-  Blogpost.find().exec((err, blogposts) => {
+  Blogpost.find({ publish: true }).exec((err, blogposts) => {
     if (err) console.error(err);
     res.json(blogposts);
   });
@@ -74,7 +74,9 @@ router.post('/:id/comments', [body('email').isEmail(),body('commentBody').isStri
       blogpost.comments = newComments;
       blogpost.save(function (err, newblogpost) {
         if (err) console.error(err);
-        res.json(newblogpost);
+        if (req.body.publicform) {
+          res.redirect('../../publicposts/' + req.params.id);
+        } else res.json(newblogpost);
       })
     });
   }

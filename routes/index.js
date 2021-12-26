@@ -4,9 +4,7 @@ var Blogpost = require('../models/blogpost');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  Blogpost.find().exec(function (err, blogposts) {
-    res.render('index', { blogposts: blogposts, user: req.user });
-  })
+  res.render('index');
 });
 
 module.exports = router;

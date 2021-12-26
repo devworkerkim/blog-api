@@ -1,0 +1,58 @@
+<% include ./parts/header %>
+
+  <div id="blogpost"></div>
+  <form method="post">
+    <h3>Add A Comment</h3>
+    <label for="email">Email:</label>
+    <input type="email" name="email" id="email" />
+    <label for="commentBody">Comment:</label>
+    <textarea name="commentBody" id="commentBody"></textarea>
+    <input type="hidden" name="publicform" value="true">
+    <input type="submit" value="Add Comment" />
+  </form>
+  <script>
+    const blogpostId = window.location.pathname.split('/')[2];
+
+    document.querySelector('form').action = `http://localhost:3000/blogposts/${blogpostId}/comments`;
+
+    fetch('http://localhost:3000/blogposts/' + blogpostId)
+      .then((response) => response.json())
+      .then((blogpost) => {
+        if (blogpost.publish) {
+          const blogdiv = document.createElement('div');
+          const blogTitle = document.createElement('h2');
+          const blogDate = document.createElement('p');
+          const blogBody = document.createElement('p');
+          
+          blogTitle.innerText = blogpost.title;
+          blogdiv.appendChild(blogTitle);
+          blogDate.innerText = blogpost.date_created;
+          blogdiv.appendChild(blogDate);
+          blogBody.innerText = blogpost.body;
+          blogdiv.appendChild(blogBody);
+          
+          const comments = document.createElement('ul');
+          for (let comment of blogpost.comments) {
+            const commentListItem = document.createElement('li');
+            const commentListTitle = document.createElement('p');
+            const commentListBody = document.createElement('p');
+  
+            commentListTitle.innerText = `${comment.author} - ${comment.date_created}`;
+            commentListItem.appendChild(commentListTitle);
+            commentListBody.innerText = comment.body;
+            commentListItem.appendChild(commentListBody);
+  
+            comments.appendChild(commentListItem);
+          }
+          blogdiv.innerHTML += '<h3>Comments</h3>';
+          blogdiv.appendChild(comments);
+          document.querySelector('#blogpost').appendChild(blogdiv);
+        }
+        else {
+          document.querySelector('#blogpost').innerHTML = '<p>This blog post does not exist</p>';
+        }
+      })
+      .catch((err) => console.error(err));
+  </script>
+
+<% include ./parts/footer %>
