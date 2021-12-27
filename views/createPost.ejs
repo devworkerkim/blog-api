@@ -1,6 +1,7 @@
-<% include ./parts/header %>
+<% include ./parts/adminHeader %>
 
-<form action="" method="post">
+<h2>Create Post</h2>
+<form action="http://localhost:3000/blogposts" method="post">
     <label for="title">Title</label>
     <input type="text" name="title" id="title" />
     <label for="title">Body</label>
@@ -9,6 +10,7 @@
         <option value="true">Publish</option>
         <option value="false">Draft</option>
     </select>
+    <input type="hidden" name="userform" value="true">
     <input type="submit" />
 </form>
 

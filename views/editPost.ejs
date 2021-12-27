@@ -1,38 +1,87 @@
-<% include ./parts/header %>
+<% include ./parts/adminHeader %>
 
-<% if (user) { %>
-    <form action="/blogposts/<%- blogpost._id %>?_method=PUT" method="post">
-        <label for="title">Title</label>
-        <input type="text" name="title" id="title" value="<%- blogpost.title %>" />
-        <p><%- blogpost.date_created %></p>
-        <label for="title">Body</label>
-        <textarea name="body" id="body"><%- blogpost.body %></textarea>
-        <select name="publish" id="publish">
-            <option value="true">Publish</option>
-            <option value="false" <% if (!blogpost.publish) { %>selected<% } %> >Draft</option>
-        </select>
-        <input type="submit" />
-    </form>
-    <form action="/blogposts/<%- blogpost._id %>?_method=DELETE" method="post"><input type="submit" value="Delete Post"></form>
-<% } else { %>
-    <h1><%- blogpost.title %></h1>
-    <p><%- blogpost.date_created %></p>
-    <p><%- blogpost.body %></p>
-<% } %>
-<h2>Comments</h2>
-<% for (var comment of blogpost.comments) { %>
-    <div>
-        <h3><%- comment.author %></h3>
-        <p><%- comment.date_created %></p>
-        <p><%- comment.body %></p>
-    </div>
-<% } %>
-<form action="/blogposts/<%- blogpost._id %>/comments" method="post">
-    <label for="username">Username</label>
-    <input type="email" id="email" name="email" />
-    <label for="commentBody">Comment</label>
-    <textarea id="commentBody" name="commentBody"></textarea>
-    <input type="submit" />
+<h2>Edit Post</h2>
+<form action="" method="put">
+    <label for="title">Title</label>
+    <input type="text" name="title" id="title" />
+    <label for="title">Body</label>
+    <textarea name="body" id="body"></textarea>
+    <select name="publish" id="publish">
+        <option value="true">Publish</option>
+        <option value="false">Draft</option>
+    </select>
+    <input type="hidden" name="userform" value="true">
+    <input type="submit" value="Save"/>
 </form>
+<form action="" method="delete">
+    <input type="hidden" name="userform" value="true">
+    <input type="submit" value="Delete">
+</form>
+<script>
+    const blogpostId = window.location.pathname.split('/')[2];
+
+    document.querySelector('form[method="put"]').action = `http://localhost:3000/blogposts/${blogpostId}?_method=PUT`;
+    document.querySelector('form[method="put"]').method = 'post';
+    document.querySelector('form[method="delete"]').action = `http://localhost:3000/blogposts/${blogpostId}?_method=DELETE`;
+    document.querySelector('form[method="delete"]').method = 'post';
+
+    fetch('http://localhost:3000/blogposts/' + blogpostId)
+    .then((response) => response.json())
+    .then((blogpost) => {
+        document.querySelector('#title').setAttribute('value', blogpost.title);
+        document.querySelector('#body').innerText = blogpost.body;
+        document.querySelector('#publish').value = blogpost.publish;
+
+        for (let comment of blogpost.comments) {
+            const commentEditForm = document.createElement('form');
+            const commentEditAuthor = document.createElement('input');
+            const commentEditBody = document.createElement('textarea');
+            const commentEditBtn = document.createElement('input');
+
+            const userFormRedirectEdit = document.createElement('input');
+            userFormRedirectEdit.type = 'hidden';
+            userFormRedirectEdit.name = 'userform';
+            userFormRedirectEdit.value = 'true';
+
+            commentEditForm.appendChild(userFormRedirectEdit);
+            commentEditAuthor.type = 'email';
+            commentEditAuthor.name = 'email';
+            commentEditAuthor.value = comment.author;
+            commentEditForm.appendChild(commentEditAuthor);
+            commentEditBody.name = 'commentBody';
+            commentEditBody.innerText = comment.body;
+            commentEditForm.appendChild(commentEditBody);
+            commentEditBtn.type = 'submit';
+            commentEditBtn.value = 'Edit Comment';
+            commentEditForm.appendChild(commentEditBtn);
+
+            commentEditForm.action = `http://localhost:3000/blogposts/${blogpostId}/comments/${comment._id}?_method=PUT`;
+            commentEditForm.method = 'post'
+
+            document.querySelector('main').appendChild(commentEditForm);
+
+            const commentDeleteForm = document.createElement('form');
+            const commentDeleteBtn = document.createElement('input');
+
+            const userFormRedirectDelete = document.createElement('input');
+            userFormRedirectDelete.type = 'hidden';
+            userFormRedirectDelete.name = 'userform';
+            userFormRedirectDelete.value = 'true';
+
+            commentDeleteForm.appendChild(userFormRedirectDelete);
+            commentDeleteBtn.type = 'submit';
+            commentDeleteBtn.value = 'Delete Comment'
+            commentDeleteForm.appendChild(commentDeleteBtn);
+            
+            commentDeleteForm.action = `http://localhost:3000/blogposts/${blogpostId}/comments/${comment._id}?_method=DELETE`;
+            commentDeleteForm.method = 'post'
+
+            document.querySelector('main').appendChild(commentDeleteForm);
+
+        }
+    })
+    .catch((err) => console.error(err));
+</script>
+
 
 <% include ./parts/footer %>

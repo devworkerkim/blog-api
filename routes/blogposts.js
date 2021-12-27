@@ -32,7 +32,8 @@ router.post('/', [body('title').isString(), body('body').isString()], function(r
     });
     newPost.save(function (err) {
       if (err) console.error(err);
-      res.json(newPost);
+      if (req.body.userform) res.redirect('../admin');
+      else res.json(newPost);
     });
   }
 });
@@ -43,22 +44,20 @@ router.put('/:id', [body('title').isString(),body('body').isString()], function(
   if (!errors.isEmpty()) {
     res.status(400).json({error: errors});
   } else {
-    Blogpost.findByIdAndUpdate(req.params.id, { 
-        title: req.body.title,
-        body: req.body.body,
-        publish: req.body.publish
-      }, {}, function (err, blogpost) {
+    Blogpost.findByIdAndUpdate(req.params.id, req.body, {returnDocument: 'after'}, function (err, blogpost) {
       if (err) console.error(err);
-      res.json(blogpost);
+      if (req.body.userform) res.redirect('../admin');
+      else res.json(blogpost);
     });
   }
 });
 
 /* DELETE single blog post */
 router.delete('/:id', function (req, res, next) {
-  Blogpost.findByIdAndDelete(req.params.id).exec(function (err, blogpost) {
+  Blogpost.findByIdAndDelete(req.params.id, function (err, blogpost) {
     if (err) console.error(err);
-    res.json(blogpost);
+    if (req.body.userform) res.redirect('../admin');
+    else res.json(blogpost);
   });
 });
 
@@ -74,9 +73,8 @@ router.post('/:id/comments', [body('email').isEmail(),body('commentBody').isStri
       blogpost.comments = newComments;
       blogpost.save(function (err, newblogpost) {
         if (err) console.error(err);
-        if (req.body.publicform) {
-          res.redirect('../../publicposts/' + req.params.id);
-        } else res.json(newblogpost);
+        if (req.body.userform) res.redirect('../../publicposts/' + req.params.id);
+        else res.json(newblogpost);
       })
     });
   }
@@ -95,7 +93,8 @@ router.put('/:id/comments/:commentid', [body('email').isEmail(),body('commentBod
       blogpost.comments = editedComments;
       blogpost.save(function (err, newblogpost) {
         if (err) console.error(err);
-        res.json(newblogpost);
+        if (req.body.userform) res.redirect('../../../admin/' + req.params.id);
+        else res.json(newblogpost);
       });
     });
   }
@@ -110,7 +109,8 @@ router.delete('/:id/comments/:commentid', function (req, res, next) {
     blogpost.comments = editedComments;
     blogpost.save(function (err, newblogpost) {
       if (err) console.error(err);
-      res.json(newblogpost);
+      if (req.body.userform) res.redirect('../../../admin/' + req.params.id);
+      else res.json(newblogpost);
     });
   });
 });

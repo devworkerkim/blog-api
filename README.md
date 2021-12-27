@@ -17,3 +17,7 @@ HTML forms will only take `GET` and `POST` methods for their submissions.  On a 
 ### How to use cURL
 
 I've been spending some significant time learning about Linux and trying to get comfortable with the command line.  As I was converting the project to a RESTful API, I needed a way to test the routes to make sure they were doing what they were supposed to be doing.  The project instructions suggested using cURL to test the routes, so I thought I would give it a go.  I found the article (The curl guide to HTTP requests)[https://flaviocopes.com/http-curl/] that gave a brief overview of some commong cURL commands with examples.  The more I tested the project, the commands became less intimidating to enter in.  Lengthy code inputs can be very daunting when they haven't been seen by a trained eye.
+
+### Sending appropriate API responses
+
+According to the article (Best practices for REST API design)[https://stackoverflow.blog/2020/03/02/best-practices-for-rest-api-design/] the API is supposed to accept and respond with JSON.  This puzzled me for a bit because of how Express can only handle one response being sent.  If I held on to the principle of just sending JSON everytime, the front-end would be nothing but data.  I thought it was clever to introduce some extra logic so that the API will stay in the UI and send JSON otherwise as per API best practice.  In order for this to happen, I created a hidden input element in all the forms that would trigger the appropriate logic if detected.

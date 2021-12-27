@@ -1,0 +1,89 @@
+<% include ./parts/adminHeader %>
+
+<table>
+    <thead>
+        <tr>
+            <td>Title</td>
+            <td>Date Created</td>
+            <td>Published</td>
+            <td>Publish/Unpublish</td>
+            <td>Delete</td>
+        </tr>
+    </thead>
+</table>
+<script>
+    fetch('http://localhost:3000/admin/blogposts')
+        .then((response) => response.json())
+        .then((blogposts) => {
+        for (let blogpost of blogposts) {
+            const blogRow = document.createElement('tr');
+            const blogTitle = document.createElement('td');
+            const blogLink = document.createElement('a');
+            const blogDate = document.createElement('td');
+            const blogPublished = document.createElement('td');
+            const blogPublishToggle = document.createElement('td');
+            const blogPublishToggleForm = document.createElement('form');
+            const blogPublishToggleTitle = document.createElement('input');
+            const blogPublishToggleBody = document.createElement('input');
+            const blogPublishToggleInput = document.createElement('input');
+            const blogPublishToggleFormBtn = document.createElement('input');
+            const blogDelete = document.createElement('td');
+            const blogDeleteForm = document.createElement('form');
+            const blogDeleteFormBtn = document.createElement('input');
+
+            blogLink.href = `/admin/${blogpost._id}`;
+            blogLink.innerText = blogpost.title;
+            blogTitle.appendChild(blogLink);
+            blogRow.appendChild(blogTitle);
+            blogDate.innerText = blogpost.date_created;
+            blogRow.appendChild(blogDate);
+            blogPublished.innerText = blogpost.publish;
+            blogRow.appendChild(blogPublished);
+
+            const userFormRedirectPublishToggle = document.createElement('input');
+            userFormRedirectPublishToggle.type = 'hidden';
+            userFormRedirectPublishToggle.name = 'userform';
+            userFormRedirectPublishToggle.value = 'true';
+
+            blogPublishToggleForm.appendChild(userFormRedirectPublishToggle);
+            blogPublishToggleTitle.type = 'hidden';
+            blogPublishToggleTitle.name = 'title';
+            blogPublishToggleTitle.value = blogpost.title;
+            blogPublishToggleForm.appendChild(blogPublishToggleTitle);
+            blogPublishToggleBody.type = 'hidden';
+            blogPublishToggleBody.name = 'body';
+            blogPublishToggleBody.value = blogpost.body;
+            blogPublishToggleForm.appendChild(blogPublishToggleBody);
+            blogPublishToggleInput.type = 'hidden';
+            blogPublishToggleInput.value = !blogpost.publish;
+            blogPublishToggleInput.name = 'publish';
+            blogPublishToggleForm.appendChild(blogPublishToggleInput);
+            blogPublishToggleFormBtn.type = 'submit';
+            blogPublishToggleFormBtn.value = blogpost.publish ? 'Unpublish' : 'Publish';
+            blogPublishToggleForm.appendChild(blogPublishToggleFormBtn);
+            blogPublishToggleForm.method = 'post';
+            blogPublishToggleForm.action = 'http://localhost:3000/blogposts/' + blogpost._id + '?_method=PUT';
+            blogPublishToggle.appendChild(blogPublishToggleForm);
+            blogRow.appendChild(blogPublishToggle);
+
+            const userFormRedirectDelete = document.createElement('input');
+            userFormRedirectDelete.type = 'hidden';
+            userFormRedirectDelete.name = 'userform';
+            userFormRedirectDelete.value = 'true';
+
+            blogDeleteForm.appendChild(userFormRedirectDelete);
+            blogDeleteFormBtn.type = 'submit';
+            blogDeleteFormBtn.value = 'Delete';
+            blogDeleteForm.appendChild(blogDeleteFormBtn);
+            blogDeleteForm.method = 'post';
+            blogDeleteForm.action = 'http://localhost:3000/blogposts/' + blogpost._id + '?_method=DELETE';
+            blogDelete.appendChild(blogDeleteForm);
+            blogRow.appendChild(blogDelete);
+
+            document.querySelector('table').appendChild(blogRow);
+        }
+        })
+        .catch((err) => console.error(err));
+</script>
+
+<% include ./parts/footer %>

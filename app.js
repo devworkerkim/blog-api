@@ -11,10 +11,8 @@ var bcrypt = require('bcrypt');
 var methodOverride = require('method-override');
 require('dotenv').config();
 
-var User = require('./models/user');
-
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var adminRouter = require('./routes/admin');
 var blogpostsRouter = require('./routes/blogposts');
 var publicpostsRouter = require('./routes/publicposts');
 
@@ -77,7 +75,7 @@ app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUniniti
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/admin', adminRouter);
 app.use('/blogposts', blogpostsRouter);
 app.use('/publicposts', publicpostsRouter);
 
