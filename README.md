@@ -21,3 +21,9 @@ I've been spending some significant time learning about Linux and trying to get 
 ### Sending appropriate API responses
 
 According to the article (Best practices for REST API design)[https://stackoverflow.blog/2020/03/02/best-practices-for-rest-api-design/] the API is supposed to accept and respond with JSON.  This puzzled me for a bit because of how Express can only handle one response being sent.  If I held on to the principle of just sending JSON everytime, the front-end would be nothing but data.  I thought it was clever to introduce some extra logic so that the API will stay in the UI and send JSON otherwise as per API best practice.  In order for this to happen, I created a hidden input element in all the forms that would trigger the appropriate logic if detected.
+
+### Client-Side Rendering
+
+I'm not sure if I'm really doing client-side rendering since I'm still pushing everything through the template engine in Express, but what I'm not doing is pushing any server-side data through the template engine.  I'm only familiar with processing anything involving a database with a server-side render.  It makes sense in my head to handle anything dynamic on the server as much as possible since I'm guessing the server has more computing power than the client's browser.
+
+It's a change of pace to try to think of doing my rendering on the client side for cases like this.  I decided to make things easier by using the `fetch` API to retrieve the info from the database.  Because of this, I do have a lot of JavaScript code for creating the necessary elements.  It's rather tedious, but I could use the exercise just in case things need to be handled on the client.  Having the Express template engine really makes dynamic rendering easier.
