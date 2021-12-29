@@ -1,6 +1,6 @@
-var express = require('express');
-var router = express.Router();
-var Blogpost = require('../models/blogpost');
+const express = require('express');
+const router = express.Router();
+const Blogpost = require('../models/blogpost');
 
 /* GET single post page. */
 router.get('/:id', function(req, res, next) {

@@ -1,7 +1,8 @@
-var express = require('express');
-var router = express.Router();
-var Blogpost = require('../models/blogpost');
-var { body, validationResult } = require('express-validator');
+const express = require('express');
+const router = express.Router();
+const Blogpost = require('../models/blogpost');
+const { body, validationResult } = require('express-validator');
+const passport = require('passport');
 
 /* GET all published blog posts. */
 router.get('/', function(req, res, next) {
@@ -20,7 +21,7 @@ router.get('/:postid', function(req, res, next) {
 });
 
 /* POST single blog post */
-router.post('/', [body('title').isString(), body('body').isString()], function(req, res, next) {
+router.post('/', passport.authenticate('jwt', {session: false}), [body('title').isString(), body('body').isString()], function(req, res, next) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     res.status(400).json({error: errors});
@@ -39,7 +40,7 @@ router.post('/', [body('title').isString(), body('body').isString()], function(r
 });
 
 /* PUT single blog post */
-router.put('/:id', [body('title').isString(),body('body').isString()], function(req, res, next) {
+router.put('/:id', passport.authenticate('jwt', {session: false}), [body('title').isString(),body('body').isString()], function(req, res, next) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     res.status(400).json({error: errors});
@@ -53,7 +54,7 @@ router.put('/:id', [body('title').isString(),body('body').isString()], function(
 });
 
 /* DELETE single blog post */
-router.delete('/:id', function (req, res, next) {
+router.delete('/:id', passport.authenticate('jwt', {session: false}), function (req, res, next) {
   Blogpost.findByIdAndDelete(req.params.id, function (err, blogpost) {
     if (err) console.error(err);
     if (req.body.userform) res.redirect('../admin');
@@ -81,7 +82,7 @@ router.post('/:id/comments', [body('email').isEmail(),body('commentBody').isStri
 });
 
 /* PUT single comment in blog post */
-router.put('/:id/comments/:commentid', [body('email').isEmail(),body('commentBody').isString()], function (req, res, next) {
+router.put('/:id/comments/:commentid', passport.authenticate('jwt', {session: false}), [body('email').isEmail(),body('commentBody').isString()], function (req, res, next) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     res.json({error: errors});
@@ -101,7 +102,7 @@ router.put('/:id/comments/:commentid', [body('email').isEmail(),body('commentBod
 });
 
 /* DELETE single comment in blog post */
-router.delete('/:id/comments/:commentid', function (req, res, next) {
+router.delete('/:id/comments/:commentid', passport.authenticate('jwt', {session: false}), function (req, res, next) {
   Blogpost.findById(req.params.id).exec(function (err, blogpost) {
     var deleteCommentInd = blogpost.comments.findIndex((comment) => comment._id.toString() === req.params.commentid);
     var editedComments = blogpost.comments;
